@@ -7,4 +7,4 @@ pdfplumber
 pytesseract
 Pillow
 pandas
-
+python-multipart
