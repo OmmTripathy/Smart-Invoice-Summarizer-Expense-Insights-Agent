@@ -3,8 +3,8 @@ import requests
 import os
 import uuid   
 
-BACKEND_URL = os.getenv("BACKEND_URL", "http://localhost:8080")
-
+BACKEND_URL = "https://smart-invoice-summarizer-expense.onrender.com"
+# os.getenv("BACKEND_URL", "http://localhost:8080")
 
 SESSION_ID = str(uuid.uuid4())
 
@@ -26,17 +26,18 @@ def process_invoice(file):
 def chat_with_agent(prompt):
     if not prompt:
         return "Please enter a question."
-    
+
     data = {
         "prompt": prompt,
-        "session_id": SESSION_ID  
+        "session_id": SESSION_ID
     }
 
-    resp = requests.post(f"{BACKEND_URL}/chat", data=data)
+    resp = requests.post(f"{BACKEND_URL}/chat", json=data)
     if resp.ok:
         return resp.json().get("reply")
     else:
         return "Chat failed"
+
 
 with gr.Blocks(title="Smart Invoice Summarizer") as demo:
 
