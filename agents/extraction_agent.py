@@ -1,49 +1,53 @@
-import os
-from typing import Any, Dict
-import pdfplumber
-import tempfile
+from typing import Dict, Any
 from openai import OpenAI
+import json
+from pathlib import Path
+
+# Import utility functions from the sibling tools folder
+from tools.image_ocr import ocr_image
+from tools.pdf_extractor import extract_pdf_text
 
 
 class ExtractionAgent:
+    """Handles document text extraction (PDFplumber/OCR) and LLM-based structured data parsing."""
     def __init__(self, api_key: str):
         self.api_key = api_key
-     
         self.client = OpenAI(api_key=api_key)
 
-    def extract(self, file_path) -> Dict[str, Any]:
+    def extract(self, file_path: Path) -> Dict[str, Any]:
         """
-        Basic pipeline:
-         - If PDF: run pdf text extraction (pdfplumber)
-         - If image: call OCR tool
-         - Then call LLM prompt to parse fields (vendor, date, line items, totals)
+        Extracts raw text and uses LLM to parse structured invoice data.
         """
         text = ""
-        if str(file_path).lower().endswith(".pdf"):
-            with pdfplumber.open(file_path) as pdf:
-                for page in pdf.pages:
-                    text += page.extract_text() or ""
-        else:
-           
-            from tools.image_ocr import ocr_image
-            text = ocr_image(file_path)
-
         
-        prompt = f"Extract invoice fields from the following text. Return JSON with vendor, date, invoice_number, line_items (description, qty, price), subtotal, tax, total.\n\nTEXT:\n{text[:6000]}"
+        # 1. Get raw text based on file type
+        file_name = str(file_path).lower()
+        if file_name.endswith(".pdf"):
+            text = extract_pdf_text(file_path)
+        elif file_name.endswith(('.png', '.jpg', '.jpeg')):
+            text = ocr_image(file_path)
+        else:
+            return {"error": "Unsupported file type."}
+
+        # 2. Use LLM for structured parsing
+        prompt = (
+            f"Extract invoice fields from the following text. Return a raw JSON object with the following fields: "
+            f"vendor, date, invoice_number, line_items (list of objects with description, qty, price), subtotal, tax, total. "
+            f"If a field is missing, use null or 0.00 where appropriate. "
+            f"IMPORTANT: ONLY return the raw JSON object, do not include markdown backticks or any explanation.\n\nTEXT:\n{text[:6000]}"
+        )
+        
         resp = self.client.chat.completions.create(
             model="gpt-4o-mini",  
             messages=[{"role":"user","content":prompt}],
-            max_tokens=800
+            max_tokens=800,
+            response_format={"type": "json_object"}
         )
         
         llm_text = resp.choices[0].message.content
         
-        import json, re
-        json_texts = re.findall(r"\{.*\}", llm_text, re.DOTALL)
-        if json_texts:
-            try:
-                return json.loads(json_texts[0])
-            except Exception:
-                pass
-     
-        return {"raw_text": text, "llm_output": llm_text}
+        try:
+            return json.loads(llm_text)
+        except Exception as e:
+            print(f"Error parsing LLM JSON output: {e}")
+            return {"raw_text": text, "llm_output": llm_text, "error": str(e)}

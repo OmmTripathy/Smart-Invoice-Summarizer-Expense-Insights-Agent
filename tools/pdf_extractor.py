@@ -1,9 +1,16 @@
 import pdfplumber
 from pathlib import Path
 
-def extract_text_from_pdf(path: Path) -> str:
+def extract_pdf_text(file_path: Path) -> str:
+    """Extracts raw text content from a PDF file using pdfplumber."""
     text = ""
-    with pdfplumber.open(path) as pdf:
-        for page in pdf.pages:
-            text += page.extract_text() or ""
+    try:
+        with pdfplumber.open(file_path) as pdf:
+            for page in pdf.pages:
+                # Concatenate text from all pages
+                text += page.extract_text() or ""
+    except Exception as e:
+        print(f"Error during PDF extraction: {e}")
+        return f"Error extracting PDF text: {e}"
+    
     return text
