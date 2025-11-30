@@ -7,7 +7,7 @@ def extract_pdf_text(file_path: Path) -> str:
     try:
         with pdfplumber.open(file_path) as pdf:
             for page in pdf.pages:
-                # Concatenate text from all pages
+                
                 text += page.extract_text() or ""
     except Exception as e:
         print(f"Error during PDF extraction: {e}")

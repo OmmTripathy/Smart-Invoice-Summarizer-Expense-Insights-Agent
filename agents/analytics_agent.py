@@ -4,7 +4,7 @@ from openai import OpenAI
 class AnalyticsAgent:
     """Generates summaries and provides conversational responses using OpenAI."""
     def __init__(self, api_key: str):
-        # Initialize the OpenAI client
+        
         self.client = OpenAI(api_key=api_key)
 
     def summarize(self, cleaned: Dict[str, Any]) -> str:
@@ -19,7 +19,7 @@ class AnalyticsAgent:
             max_tokens=400
         )
         
-        # Return the raw text content for the insights display
+        
         return resp.choices[0].message.content
 
     def chat_reply(self, prompt: str) -> str:

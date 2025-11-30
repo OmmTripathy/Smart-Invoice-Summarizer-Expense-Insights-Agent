@@ -3,7 +3,7 @@ from openai import OpenAI
 import json
 from pathlib import Path
 
-# Import utility functions from the sibling tools folder
+
 from tools.image_ocr import ocr_image
 from tools.pdf_extractor import extract_pdf_text
 
@@ -20,7 +20,7 @@ class ExtractionAgent:
         """
         text = ""
         
-        # 1. Get raw text based on file type
+       
         file_name = str(file_path).lower()
         if file_name.endswith(".pdf"):
             text = extract_pdf_text(file_path)
@@ -29,7 +29,7 @@ class ExtractionAgent:
         else:
             return {"error": "Unsupported file type."}
 
-        # 2. Use LLM for structured parsing
+        
         prompt = (
             f"Extract invoice fields from the following text. Return a raw JSON object with the following fields: "
             f"vendor, date, invoice_number, line_items (list of objects with description, qty, price), subtotal, tax, total. "

@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import Dict, Any
 import os
 
-# Define DB path relative to the current working directory
+
 DB_DIR = Path("storage")
 DB_PATH = DB_DIR / "sessions.db"
 DB_DIR.mkdir(exist_ok=True) 
