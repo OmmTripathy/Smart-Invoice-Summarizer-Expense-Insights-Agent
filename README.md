@@ -134,18 +134,14 @@ OpenAI API access
 # Clone repository from github
 git clone https://github.com/yourusername/expense-tracker-agent.git
 
+#Activate virtual environment
+.\.venv\Scripts\Activate.ps1
+
 # Install dependencies
 pip install -r requirements.txt
 
-# Execute frontend & backend together
-runall.bat
-
-
-#Lunch backend and frontend in separate terminals
-# Run only backend
-uvicorn app.main:app --reload --port 8080
-# Launch only frontend
-uvicorn ui.app:app --reload --port 8000
+# Execute
+uvicorn main:app --reload
 ```
 
 ## 8. Future Enhancements
