@@ -1,295 +1,353 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Smart Invoice Summarizer & Expense Insights Agent</title>
-    
+
     <script src="https://cdn.tailwindcss.com"></script>
-    
+
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f4f6f8;
-        }
-        .container-card {
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        }
-        .chat-bubble-user {
-            background-color: #2563eb;
-            color: white;
-            border-bottom-right-radius: 0;
-        }
-        .chat-bubble-agent {
-            background-color: #e5e7eb;
-            color: #1f2937;
-            border-bottom-left-radius: 0;
-        }
-        .hidden {
-            display: none;
-        }
-        
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 8px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background-color: #cbd5e1; 
-            border-radius: 4px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background-color: #f1f5f9; 
-        }
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #f4f6f8;
+      }
+      .container-card {
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      }
+      .chat-bubble-user {
+        background-color: #2563eb;
+        color: white;
+        border-bottom-right-radius: 0;
+      }
+      .chat-bubble-agent {
+        background-color: #e5e7eb;
+        color: #1f2937;
+        border-bottom-left-radius: 0;
+      }
+      .hidden {
+        display: none;
+      }
+
+      .custom-scrollbar::-webkit-scrollbar {
+        width: 8px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-thumb {
+        background-color: #cbd5e1;
+        border-radius: 4px;
+      }
+      .custom-scrollbar::-webkit-scrollbar-track {
+        background-color: #f1f5f9;
+      }
     </style>
-</head>
-<body class="min-h-screen p-4 sm:p-8 flex justify-center">
-
+  </head>
+  <body class="min-h-screen p-4 sm:p-8 flex justify-center">
     <div class="w-full max-w-5xl">
-        
-        <header class="text-center py-6 bg-white rounded-t-xl container-card shadow-lg">
-            <h1 class="text-3xl font-extrabold text-blue-800 flex items-center justify-center">
-                <i data-lucide="receipt-text" class="w-8 h-8 mr-3 text-blue-600"></i>
-                Smart Invoice Summarizer & Expense Insights Agent
-            </h1>
-            <p class="text-gray-500 mt-1">Extract, Analyze, and Chat about your financial documents.</p>
-        </header>
+      <header
+        class="text-center py-6 bg-white rounded-t-xl container-card shadow-lg"
+      >
+        <h1
+          class="text-3xl font-extrabold text-blue-800 flex items-center justify-center"
+        >
+          <i data-lucide="receipt-text" class="w-8 h-8 mr-3 text-blue-600"></i>
+          Smart Invoice Summarizer & Expense Insights Agent
+        </h1>
+        <p class="text-gray-500 mt-1">
+          Extract, Analyze, and Chat about your financial documents.
+        </p>
+      </header>
 
-        
-        <main class="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-6">
+      <main class="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-6">
+        <div
+          class="bg-white p-6 rounded-xl container-card h-full flex flex-col"
+        >
+          <h2 class="text-xl font-semibold text-gray-800 mb-4 border-b pb-2">
+            <i data-lucide="upload" class="w-5 h-5 inline-block mr-2"></i>
+            Invoice Processing
+          </h2>
 
-            
-            <div class="bg-white p-6 rounded-xl container-card h-full flex flex-col">
-                <h2 class="text-xl font-semibold text-gray-800 mb-4 border-b pb-2">
-                    <i data-lucide="upload" class="w-5 h-5 inline-block mr-2"></i>
-                    Invoice Processing
-                </h2>
+          <div class="mb-4">
+            <label
+              for="invoiceFile"
+              class="block text-sm font-medium text-gray-700 mb-2"
+              >Upload Invoice (PDF/Image)</label
+            >
+            <input
+              type="file"
+              id="invoiceFile"
+              accept=".pdf,image/*"
+              class="w-full text-gray-700 bg-gray-50 border border-gray-300 rounded-lg p-2 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+            />
+          </div>
 
-                <div class="mb-4">
-                    <label for="invoiceFile" class="block text-sm font-medium text-gray-700 mb-2">Upload Invoice (PDF/Image)</label>
-                    <input type="file" id="invoiceFile" accept=".pdf,image/*" class="w-full text-gray-700 bg-gray-50 border border-gray-300 rounded-lg p-2 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
-                </div>
+          <button
+            id="processBtn"
+            class="w-full py-3 px-4 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition duration-150 flex items-center justify-center"
+          >
+            <span id="processText">Process Invoice</span>
+            <i
+              id="processSpinner"
+              data-lucide="loader-circle"
+              class="w-5 h-5 ml-2 animate-spin hidden"
+            ></i>
+          </button>
 
-                <button id="processBtn" class="w-full py-3 px-4 bg-blue-600 text-white font-bold rounded-xl hover:bg-blue-700 transition duration-150 flex items-center justify-center">
-                    <span id="processText">Process Invoice</span>
-                    <i id="processSpinner" data-lucide="loader-circle" class="w-5 h-5 ml-2 animate-spin hidden"></i>
-                </button>
-                
-                <div id="processStatus" class="mt-4 p-3 rounded-lg text-sm hidden"></div>
+          <div
+            id="processStatus"
+            class="mt-4 p-3 rounded-lg text-sm hidden"
+          ></div>
 
-                
-                <div class="mt-6 flex-grow overflow-auto">
-                    <h3 class="font-bold text-gray-700 mb-2">Extracted Data (JSON)</h3>
-                    <pre id="extractedData" class="bg-gray-100 p-3 rounded-lg text-xs overflow-auto max-h-40 min-h-[5rem]"></pre>
+          <div class="mt-6 flex-grow overflow-auto">
+            <h3 class="font-bold text-gray-700 mb-2">Extracted Data (JSON)</h3>
+            <pre
+              id="extractedData"
+              class="bg-gray-100 p-3 rounded-lg text-xs overflow-auto max-h-40 min-h-[5rem]"
+            ></pre>
 
-                    <h3 class="font-bold text-gray-700 mt-4 mb-2">Insights Summary</h3>
-                    <div id="insightsSummary" class="bg-gray-100 p-3 rounded-lg text-sm min-h-[5rem]"></div>
-                </div>
-            </div>
+            <h3 class="font-bold text-gray-700 mt-4 mb-2">Insights Summary</h3>
+            <div
+              id="insightsSummary"
+              class="bg-gray-100 p-3 rounded-lg text-sm min-h-[5rem]"
+            ></div>
+          </div>
+        </div>
 
-           
-            <div class="bg-white p-6 rounded-xl container-card flex flex-col lg:h-[70vh] min-h-[500px]">
-                <h2 class="text-xl font-semibold text-gray-800 mb-4 border-b pb-2">
-                    <i data-lucide="message-square-text" class="w-5 h-5 inline-block mr-2"></i>
-                    Chat with Expense Agent
-                </h2>
+        <div
+          class="bg-white p-6 rounded-xl container-card flex flex-col lg:h-[70vh] min-h-[500px]"
+        >
+          <h2 class="text-xl font-semibold text-gray-800 mb-4 border-b pb-2">
+            <i
+              data-lucide="message-square-text"
+              class="w-5 h-5 inline-block mr-2"
+            ></i>
+            Chat with Expense Agent
+          </h2>
 
-                
-                <div id="chatHistory" class="flex-grow overflow-y-auto space-y-4 pr-2 pb-2 mb-4 custom-scrollbar">
-                    
-                </div>
+          <div
+            id="chatHistory"
+            class="flex-grow overflow-y-auto space-y-4 pr-2 pb-2 mb-4 custom-scrollbar"
+          ></div>
 
-                
-                <div class="flex space-x-3">
-                    <input type="text" id="chatInput" placeholder="Ask a question..." class="flex-grow p-3 border border-gray-300 rounded-xl focus:ring-blue-500 focus:border-blue-500 transition duration-150" onkeydown="if(event.key === 'Enter') document.getElementById('chatSendBtn').click()">
-                    <button id="chatSendBtn" class="p-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition duration-150 flex items-center justify-center">
-                        <i data-lucide="send" class="w-5 h-5"></i>
-                    </button>
-                </div>
-            </div>
-        </main>
+          <div class="flex space-x-3">
+            <input
+              type="text"
+              id="chatInput"
+              placeholder="Ask a question..."
+              class="flex-grow p-3 border border-gray-300 rounded-xl focus:ring-blue-500 focus:border-blue-500 transition duration-150"
+              onkeydown="if(event.key === 'Enter') document.getElementById('chatSendBtn').click()"
+            />
+            <button
+              id="chatSendBtn"
+              class="p-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition duration-150 flex items-center justify-center"
+            >
+              <i data-lucide="send" class="w-5 h-5"></i>
+            </button>
+          </div>
+        </div>
+      </main>
     </div>
 
-    
     <script>
-        
-        const SESSION_ID = crypto.randomUUID(); 
-        const API_URL = ""; 
+      let SESSION_ID = localStorage.getItem("SESSION_ID");
+      if (!SESSION_ID) {
+        SESSION_ID = crypto.randomUUID();
+        localStorage.setItem("SESSION_ID", SESSION_ID);
+      }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            
-            lucide.createIcons();
+      const API_URL = "";
 
-            const processBtn = document.getElementById('processBtn');
-            const processText = document.getElementById('processText');
-            const processSpinner = document.getElementById('processSpinner');
-            const fileInput = document.getElementById('invoiceFile');
-            const extractedData = document.getElementById('extractedData');
-            const insightsSummary = document.getElementById('insightsSummary');
-            const processStatus = document.getElementById('processStatus');
+      document.addEventListener("DOMContentLoaded", () => {
+        lucide.createIcons();
 
-            const chatInput = document.getElementById('chatInput');
-            const chatSendBtn = document.getElementById('chatSendBtn');
-            const chatHistory = document.getElementById('chatHistory');
-            
-            
-            appendMessage('agent', 'Hello! I can analyze invoices (PDF/Image) or answer general knowledge questions. How can I help you today?');
+        const processBtn = document.getElementById("processBtn");
+        const processText = document.getElementById("processText");
+        const processSpinner = document.getElementById("processSpinner");
+        const fileInput = document.getElementById("invoiceFile");
+        const extractedData = document.getElementById("extractedData");
+        const insightsSummary = document.getElementById("insightsSummary");
+        const processStatus = document.getElementById("processStatus");
 
+        const chatInput = document.getElementById("chatInput");
+        const chatSendBtn = document.getElementById("chatSendBtn");
+        const chatHistory = document.getElementById("chatHistory");
 
-           
+        appendMessage(
+          "agent",
+          "Hello! I can analyze invoices (PDF/Image) or answer general knowledge questions. How can I help you today?"
+        );
 
-            function showLoading(element, text) {
-                element.classList.remove('hidden');
-                element.textContent = text;
-                element.classList.remove('bg-red-100', 'text-red-700', 'bg-green-100', 'text-green-700');
-            }
+        function showLoading(element, text) {
+          element.classList.remove("hidden");
+          element.textContent = text;
+          element.classList.remove(
+            "bg-red-100",
+            "text-red-700",
+            "bg-green-100",
+            "text-green-700"
+          );
+        }
 
-            function showSuccess(element, text) {
-                element.classList.remove('hidden');
-                element.textContent = text;
-                element.classList.add('bg-green-100', 'text-green-700');
-            }
+        function showSuccess(element, text) {
+          element.classList.remove("hidden");
+          element.textContent = text;
+          element.classList.add("bg-green-100", "text-green-700");
+        }
 
-            function showError(element, text) {
-                element.classList.remove('hidden');
-                element.textContent = text;
-                element.classList.add('bg-red-100', 'text-red-700');
-            }
+        function showError(element, text) {
+          element.classList.remove("hidden");
+          element.textContent = text;
+          element.classList.add("bg-red-100", "text-red-700");
+        }
 
-            function updateButtonState(button, isLoading) {
-                button.disabled = isLoading;
-                if (isLoading) {
-                    processText.textContent = 'Processing...';
-                    processSpinner.classList.remove('hidden');
-                    button.classList.add('opacity-50', 'cursor-not-allowed');
-                } else {
-                    processText.textContent = 'Process Invoice';
-                    processSpinner.classList.add('hidden');
-                    button.classList.remove('opacity-50', 'cursor-not-allowed');
-                }
-            }
+        function updateButtonState(button, isLoading) {
+          button.disabled = isLoading;
+          if (isLoading) {
+            processText.textContent = "Processing...";
+            processSpinner.classList.remove("hidden");
+            button.classList.add("opacity-50", "cursor-not-allowed");
+          } else {
+            processText.textContent = "Process Invoice";
+            processSpinner.classList.add("hidden");
+            button.classList.remove("opacity-50", "cursor-not-allowed");
+          }
+        }
 
-            function appendMessage(role, message) {
-                const isUser = role === 'user';
-                const messageDiv = document.createElement('div');
-                messageDiv.className = `flex ${isUser ? 'justify-end' : 'justify-start'}`;
-                
-                const bubble = document.createElement('div');
-                bubble.className = `max-w-[80%] p-3 rounded-xl ${isUser ? 'chat-bubble-user' : 'chat-bubble-agent'}`;
-                bubble.textContent = message;
+        function appendMessage(role, message) {
+          const isUser = role === "user";
+          const messageDiv = document.createElement("div");
+          messageDiv.className = `flex ${
+            isUser ? "justify-end" : "justify-start"
+          }`;
 
-                messageDiv.appendChild(bubble);
-                chatHistory.appendChild(messageDiv);
-                
-                
-                chatHistory.scrollTop = chatHistory.scrollHeight;
-            }
+          const bubble = document.createElement("div");
+          bubble.className = `max-w-[80%] p-3 rounded-xl ${
+            isUser ? "chat-bubble-user" : "chat-bubble-agent"
+          }`;
+          bubble.textContent = message;
 
+          messageDiv.appendChild(bubble);
+          chatHistory.appendChild(messageDiv);
 
-           
-            processBtn.addEventListener('click', async () => {
-                const file = fileInput.files[0];
-                if (!file) {
-                    showError(processStatus, "Please select a file to upload.");
-                    return;
-                }
+          chatHistory.scrollTop = chatHistory.scrollHeight;
+        }
 
-                updateButtonState(processBtn, true);
-                showLoading(processStatus, "Uploading and processing invoice. Please wait...");
-                extractedData.textContent = "Loading...";
-                insightsSummary.textContent = "Loading...";
-                
-                try {
-                    const formData = new FormData();
-                    formData.append('file', file);
-                    formData.append('session_id', SESSION_ID);
+        processBtn.addEventListener("click", async () => {
+          const file = fileInput.files[0];
+          if (!file) {
+            showError(processStatus, "Please select a file to upload.");
+            return;
+          }
 
-                    const response = await fetch(`${API_URL}/process`, {
-                        method: 'POST',
-                        body: formData,
-                    });
+          updateButtonState(processBtn, true);
+          showLoading(
+            processStatus,
+            "Uploading and processing invoice. Please wait..."
+          );
+          extractedData.textContent = "Loading...";
+          insightsSummary.textContent = "Loading...";
 
-                    if (!response.ok) {
-                        const errorData = await response.json();
-                        throw new Error(errorData.detail || `HTTP error! Status: ${response.status}`);
-                    }
+          try {
+            const formData = new FormData();
+            formData.append("file", file);
+            formData.append("session_id", SESSION_ID);
 
-                    const result = await response.json();
-                    
-                   
-                    extractedData.textContent = JSON.stringify(result.data, null, 2);
-                    insightsSummary.textContent = result.insights;
-                    showSuccess(processStatus, "Invoice successfully processed and session updated.");
-
-                    
-                    appendMessage('agent', 'Invoice processed! You can now ask me questions about the extracted data, like "What is the total amount?"');
-
-                } catch (error) {
-                    console.error('Processing error:', error);
-                    showError(processStatus, `Processing failed: ${error.message}`);
-                    extractedData.textContent = "Error during processing.";
-                    insightsSummary.textContent = "Error during processing.";
-                } finally {
-                    updateButtonState(processBtn, false);
-                }
+            const response = await fetch(`${API_URL}/process`, {
+              method: "POST",
+              body: formData,
             });
 
-            
-            chatSendBtn.addEventListener('click', async () => {
-                const prompt = chatInput.value.trim();
-                if (!prompt) return;
+            if (!response.ok) {
+              const errorData = await response.json();
+              throw new Error(
+                errorData.detail || `HTTP error! Status: ${response.status}`
+              );
+            }
 
-                
-                appendMessage('user', prompt);
-                chatInput.value = '';
-                chatSendBtn.disabled = true;
-                chatInput.placeholder = "Agent is typing...";
+            const result = await response.json();
 
-               
-                const loadingBubble = document.createElement('div');
-                loadingBubble.className = "flex justify-start agent-typing";
-                loadingBubble.innerHTML = '<div class="max-w-[80%] p-3 rounded-xl chat-bubble-agent"><i data-lucide="loader-circle" class="w-4 h-4 animate-spin inline-block mr-1"></i> Thinking...</div>';
-                chatHistory.appendChild(loadingBubble);
-                lucide.createIcons(); 
-                chatHistory.scrollTop = chatHistory.scrollHeight;
+            extractedData.textContent = JSON.stringify(result.data, null, 2);
+            insightsSummary.textContent = result.insights;
+            showSuccess(
+              processStatus,
+              "Invoice successfully processed and session updated."
+            );
 
-                try {
-                    const data = {
-                        prompt: prompt,
-                        session_id: SESSION_ID
-                    };
-                    
-                    const response = await fetch(`${API_URL}/chat`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(data),
-                    });
-
-                    if (!response.ok) {
-                        const errorData = await response.json();
-                        throw new Error(errorData.detail || `HTTP error! Status: ${response.status}`);
-                    }
-
-                    const result = await response.json();
-                    
-                    
-                    chatHistory.removeChild(loadingBubble);
-                    appendMessage('agent', result.reply || "I didn't receive a clear reply. Please try again.");
-
-                } catch (error) {
-                    console.error('Chat error:', error);
-                    
-                    chatHistory.removeChild(loadingBubble);
-                    appendMessage('agent', `An error occurred: ${error.message}. Please check the backend logs.`);
-                } finally {
-                    chatSendBtn.disabled = false;
-                    chatInput.placeholder = "Ask a question...";
-                    chatInput.focus();
-                }
-            });
+            appendMessage(
+              "agent",
+              'Invoice processed! You can now ask me questions about the extracted data, like "What is the total amount?"'
+            );
+          } catch (error) {
+            console.error("Processing error:", error);
+            showError(processStatus, `Processing failed: ${error.message}`);
+            extractedData.textContent = "Error during processing.";
+            insightsSummary.textContent = "Error during processing.";
+          } finally {
+            updateButtonState(processBtn, false);
+          }
         });
+
+        chatSendBtn.addEventListener("click", async () => {
+          const prompt = chatInput.value.trim();
+          if (!prompt) return;
+
+          appendMessage("user", prompt);
+          chatInput.value = "";
+          chatSendBtn.disabled = true;
+          chatInput.placeholder = "Agent is typing...";
+
+          const loadingBubble = document.createElement("div");
+          loadingBubble.className = "flex justify-start agent-typing";
+          loadingBubble.innerHTML =
+            '<div class="max-w-[80%] p-3 rounded-xl chat-bubble-agent"><i data-lucide="loader-circle" class="w-4 h-4 animate-spin inline-block mr-1"></i> Thinking...</div>';
+          chatHistory.appendChild(loadingBubble);
+          lucide.createIcons();
+          chatHistory.scrollTop = chatHistory.scrollHeight;
+
+          try {
+            const data = {
+              prompt: prompt,
+              session_id: SESSION_ID,
+            };
+
+            const response = await fetch(`${API_URL}/chat`, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(data),
+            });
+
+            if (!response.ok) {
+              const errorData = await response.json();
+              throw new Error(
+                errorData.detail || `HTTP error! Status: ${response.status}`
+              );
+            }
+
+            const result = await response.json();
+
+            chatHistory.removeChild(loadingBubble);
+            appendMessage(
+              "agent",
+              result.reply ||
+                "I didn't receive a clear reply. Please try again."
+            );
+          } catch (error) {
+            console.error("Chat error:", error);
+
+            chatHistory.removeChild(loadingBubble);
+            appendMessage(
+              "agent",
+              `An error occurred: ${error.message}. Please check the backend logs.`
+            );
+          } finally {
+            chatSendBtn.disabled = false;
+            chatInput.placeholder = "Ask a question...";
+            chatInput.focus();
+          }
+        });
+      });
     </script>
-</body>
+  </body>
 </html>
