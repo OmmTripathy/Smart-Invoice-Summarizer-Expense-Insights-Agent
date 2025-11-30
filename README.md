@@ -109,7 +109,7 @@ Supports deployment on Cloud Run or local
 ---
 
 ## 6. Features
-Multi-agent architecture, Tools integration, Structured data extraction, API endpoint integration, Vision-based model usage, Invoice summarization, Analytics & insights generation, Memory for storing past expenses
+Multi-agent system, Agent powered by an LLM, Sequential agents, custom tools integration, Sessions & state management , Long term memory, Context engineering, Structured data extraction, API endpoint integration, Vision-based model usage, Invoice summarization, Analytics & insights generation.
 
 ---
 
