@@ -109,15 +109,7 @@ Supports deployment on Cloud Run or local
 ---
 
 ## 6. Features
-Multi-agent architecture
-Tools integration
-Structured data extraction  
-API endpoint integration  
-Vision-based model usage  
-Invoice summarization  
-Analytics & insights generation  
-Cloud Run deployment  
-Memory for storing past expenses
+Multi-agent architecture, Tools integration, Structured data extraction, API endpoint integration, Vision-based model usage, Invoice summarization, Analytics & insights generation, Memory for storing past expenses
 
 ---
 
@@ -126,7 +118,7 @@ Memory for storing past expenses
 ### Prerequisites
 Python 3.9+  
 FastAPI  
-Gradio / HTML / JS frontend  
+HTML / CSS / JS frontend  
 OpenAI API access
 
 ### Installation
